@@ -2,18 +2,12 @@ const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const subCategoryModel = require("../models/subCategoryModel");
 const APIError = require("../utils/apiError");
-const categoryModel = require("../models/categoryModel");
 
 // @desc    Create subCategory
 // @route   POST    /api/v1/subcategories
 // @access  Private
 exports.createSubCategory = asyncHandler(async (req, res, next) => {
   const { name, category } = req.body;
-
-  const categoryDoc = await categoryModel.findOne({ _id: category });
-  if (!categoryDoc) {
-    return next(new APIError(`No Category of id ${category} exists`, 404));
-  }
 
   const subCategory = await subCategoryModel.create({
     name,
@@ -68,11 +62,6 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
 exports.updateSubCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { name, category } = req.body;
-
-  const categoryDoc = await categoryModel.findOne({ _id: category });
-  if (!categoryDoc) {
-    return next(new APIError(`No Category of id ${category} exists`, 404));
-  }
 
   const subCategory = await subCategoryModel.findOneAndUpdate(
     { _id: id },

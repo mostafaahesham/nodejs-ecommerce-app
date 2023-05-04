@@ -1,5 +1,9 @@
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const categoryModel = require("../../models/categoryModel");
+const subCategoryModel = require("../../models/subCategoryModel");
+const brandModel = require("../../models/brandModel");
+const APIError = require("../apiError");
 
 exports.createProductValidator = [
   check("name")
@@ -20,17 +24,37 @@ exports.createProductValidator = [
     .notEmpty()
     .withMessage("Product must belong to a brand")
     .isMongoId()
-    .withMessage("brand must be a valid mongoID"),
+    .withMessage("brand must be a valid mongoID")
+    .custom(async (brandId) => {
+      const brand = await brandModel.findById({ _id: brandId });
+      if (!brand) {
+        throw new APIError(`Brand of id ${brandId} does not exist`);
+      }
+    }),
   check("category")
     .notEmpty()
     .withMessage("Product must belong to a category")
     .isMongoId()
-    .withMessage("category must be a valid mongoID"),
+    .withMessage("category must be a valid mongoID")
+    .custom(async (categoryId) => {
+      const category = await categoryModel.findById({ _id: categoryId });
+      if (!category) {
+        throw new APIError(`Category of id ${categoryId} does not exist`);
+      }
+    }),
   check("subCategory")
     .notEmpty()
     .withMessage("Product must belong to a subCategory")
     .isMongoId()
-    .withMessage("subCategory must be a valid mongoID"),
+    .withMessage("subCategory must be a valid mongoID")
+    .custom(async (subCategoryId) => {
+      const subCategory = await subCategoryModel.findById({
+        _id: subCategoryId,
+      });
+      if (!subCategory) {
+        throw new APIError(`subCategory of id ${subCategoryId} does not exist`);
+      }
+    }),
   check("currentPrice")
     .notEmpty()
     .withMessage("price is required")

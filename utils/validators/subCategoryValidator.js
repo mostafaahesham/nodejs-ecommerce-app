@@ -1,5 +1,7 @@
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const categoryModel = require("../../models/categoryModel");
+const APIError = require("../apiError");
 
 exports.getSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid SubCategory Id format"),
@@ -18,13 +20,27 @@ exports.createSubCategoryValidator = [
     .notEmpty()
     .withMessage("SubCategory Must belong to a parent Category")
     .isMongoId()
-    .withMessage("Invalid Category Id format"),
+    .withMessage("Invalid Category Id format")
+    .custom(async (categoryId) => {
+      const category = await categoryModel.findById({ _id: categoryId });
+      if (!category) {
+        throw new APIError(`Category of id ${categoryId} does not exist`);
+      }
+    }),
   validatorMiddleware,
 ];
 
 exports.updateSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid SubCategory Id format"),
-  check("category").isMongoId().withMessage("Invalid Category Id format"),
+  check("category")
+    .isMongoId()
+    .withMessage("Invalid Category Id format")
+    .custom(async (categoryId) => {
+      const category = await categoryModel.findById({ _id: categoryId });
+      if (!category) {
+        throw new APIError(`Category of id ${categoryId} does not exist`);
+      }
+    }),
   validatorMiddleware,
 ];
 

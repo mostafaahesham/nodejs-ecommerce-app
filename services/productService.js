@@ -13,15 +13,6 @@ const APIError = require("../utils/apiError");
 exports.createProduct = asyncHandler(async (req, res, next) => {
   req.body.slug = slugify(req.body.name);
 
-  const category = await categoryModel.findOne({ _id: req.body.category });
-  const subCategory = await subCategoryModel.findOne({
-    _id: req.body.subCategory,
-  });
-  const brand = await brandModel.findOne({ _id: req.body.brand });
-  if (!category || !subCategory || !brand) {
-    return next(new APIError(`Invalid Product parameters`, 404));
-  }
-  console.log(req.body);
   const product = await productModel.create(req.body);
   res.status(201).json({ data: product });
 });
@@ -58,15 +49,6 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   req.body.slug = slugify(req.body.name);
-
-  const category = await categoryModel.findOne({ _id: req.body.category });
-  const subCategory = await subCategoryModel.findOne({
-    _id: req.body.subCategory,
-  });
-  const brand = await brandModel.findOne({ _id: req.body.brand });
-  if (!category || !subCategory || !brand) {
-    return next(new APIError(`Invalid Product parameters`, 404));
-  }
 
   const product = await productModel.findOneAndUpdate({ _id: id }, req.body);
   if (!product) {
