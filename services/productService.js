@@ -18,9 +18,10 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     _id: req.body.subCategory,
   });
   const brand = await brandModel.findOne({ _id: req.body.brand });
-  if (!category && !subCategory && !brand) {
+  if (!category || !subCategory || !brand) {
     return next(new APIError(`Invalid Product parameters`, 404));
   }
+  console.log(req.body);
   const product = await productModel.create(req.body);
   res.status(201).json({ data: product });
 });
@@ -63,7 +64,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
     _id: req.body.subCategory,
   });
   const brand = await brandModel.findOne({ _id: req.body.brand });
-  if (!category && !subCategory && !brand) {
+  if (!category || !subCategory || !brand) {
     return next(new APIError(`Invalid Product parameters`, 404));
   }
 

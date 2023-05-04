@@ -1,4 +1,9 @@
 const express = require("express");
+
+const multer = require("multer");
+
+const upload = multer();
+
 const {
   getProducts,
   createProduct,
@@ -15,11 +20,14 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getProducts).post(createProductValidator, createProduct);
+router
+  .route("/")
+  .get(getProducts)
+  .post(upload.none(),createProductValidator, createProduct);
 router
   .route("/:id")
   .get(getProductValidator, getProduct)
   .put(updateProductValidator, updateProduct)
-  .delete(deleteProductValidator, deleteProduct);
+  .delete(upload.none(),deleteProductValidator, deleteProduct);
 
 module.exports = router;
