@@ -51,6 +51,14 @@ exports.getProducts = asyncHandler(async (req, res) => {
     productsQuery = productsQuery.sort("-createdAt");
   }
 
+  // field limiting
+  if (req.query.fields) {
+    const fields = req.query.fields.split(",").join(" ");
+    productsQuery = productsQuery.select(fields);
+  } else {
+    productsQuery = productsQuery.select("-__v");
+  }
+
   // execute query
   const products = await productsQuery;
 
