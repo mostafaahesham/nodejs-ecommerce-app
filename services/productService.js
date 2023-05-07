@@ -6,6 +6,7 @@ const categoryModel = require("../models/categoryModel");
 const subCategoryModel = require("../models/subCategoryModel");
 const brandModel = require("../models/brandModel");
 const APIError = require("../utils/apiError");
+const ApiFeatures = require("../utils/apiFeatures");
 
 // @desc    Create Product
 // @route   POST    /api/v1/products
@@ -21,48 +22,18 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/products
 // @access  Public
 exports.getProducts = asyncHandler(async (req, res) => {
-  // filtration
-  const queryStringObject = { ...req.query };
-  const execludedField = ["page", "sort", "limit", "fields"];
-  execludedField.forEach((field) => delete queryStringObject[field]);
-
-  let queryString = JSON.stringify(queryStringObject);
-  queryString = queryString.replace(
-    /\b(gte|gt|lte|lt)\b/g,
-    (match) => `$${match}`
-  );
-
-  // pagination
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
-
   // query building
-  let productsQuery = productModel
-    .find(JSON.parse(queryString))
-    .skip(skip)
-    .limit(limit);
-
-  // sorting
-  if (req.query.sort) {
-    const sortBy = req.query.sort.split(",").join(" ");
-    productsQuery = productsQuery.sort(sortBy);
-  } else {
-    productsQuery = productsQuery.sort("-createdAt");
-  }
-
-  // field limiting
-  if (req.query.fields) {
-    const fields = req.query.fields.split(",").join(" ");
-    productsQuery = productsQuery.select(fields);
-  } else {
-    productsQuery = productsQuery.select("-__v");
-  }
+  const apiFeatures = new ApiFeatures(productModel.find(), req.query)
+    .paginate()
+    .filter()
+    .search()
+    .limitFields()
+    .sort();
 
   // execute query
-  const products = await productsQuery;
+  const products = await apiFeatures.mongooseQuery;
 
-  res.status(200).json({ results: products.length, page, data: products });
+  res.status(200).json({ results: products.length, data: products });
 });
 
 // @desc    Get Specific product by id
