@@ -21,11 +21,38 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/products
 // @access  Public
 exports.getProducts = asyncHandler(async (req, res) => {
+  // filtration
+  const queryStringObject = { ...req.query };
+  const execludedField = ["page", "sort", "limit", "fields"];
+  execludedField.forEach((field) => delete queryStringObject[field]);
+
+  let queryString = JSON.stringify(queryStringObject);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|lt)\b/g,
+    (match) => `$${match}`
+  );
+
+  // pagination
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
-  const products = await productModel.find({}).skip(skip).limit(limit);
+  // query building
+  let productsQuery = productModel
+    .find(JSON.parse(queryString))
+    .skip(skip)
+    .limit(limit);
+
+  // sorting
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    productsQuery = productsQuery.sort(sortBy);
+  } else {
+    productsQuery = productsQuery.sort("-createdAt");
+  }
+
+  // execute query
+  const products = await productsQuery;
 
   res.status(200).json({ results: products.length, page, data: products });
 });
