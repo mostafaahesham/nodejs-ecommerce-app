@@ -13,8 +13,7 @@ const {
   deleteSubCategoryValidator,
 } = require("../utils/validators/subCategoryValidator");
 
-// mergeParams:  allows params access  on other routes
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
 router
   .route("/")

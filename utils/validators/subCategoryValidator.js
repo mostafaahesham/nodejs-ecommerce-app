@@ -1,4 +1,5 @@
-const { check } = require("express-validator");
+const { check, body } = require("express-validator");
+const { default: slugify } = require("slugify");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
 const categoryModel = require("../../models/categoryModel");
 const APIError = require("../apiError");
@@ -15,7 +16,11 @@ exports.createSubCategoryValidator = [
     .isLength({ min: 3 })
     .withMessage("SubCategory name can't be less than 3 charachters")
     .isLength({ max: 50 })
-    .withMessage("SubCategory name can't be more than 50 charachters"),
+    .withMessage("SubCategory name can't be more than 50 charachters")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
   check("category")
     .notEmpty()
     .withMessage("SubCategory Must belong to a parent Category")
@@ -41,6 +46,10 @@ exports.updateSubCategoryValidator = [
         throw new APIError(`Category of id ${categoryId} does not exist`);
       }
     }),
+  body("name").custom((val, { req }) => {
+    req.body.slug = slugify(val);
+    return true;
+  }),
   validatorMiddleware,
 ];
 
