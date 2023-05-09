@@ -19,7 +19,7 @@ exports.resizeSubCategoryImage = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// @desc upload single Category Image
+// @desc upload single Category image
 exports.uploadSubCategoryImage = uploadSingleImage("image");
 
 // @desc    Create subCategory
