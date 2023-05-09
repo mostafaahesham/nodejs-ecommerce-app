@@ -14,7 +14,7 @@ exports.resizeSubCategoryImage = asyncHandler(async (req, res, next) => {
     .png({ quality: 50 })
     .toFile(`static/images/subCategories/${filename}`);
 
-  req.body.image = req.hostname + filename;
+  req.body.image = filename;
 
   next();
 });

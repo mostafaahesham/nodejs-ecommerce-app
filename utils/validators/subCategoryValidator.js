@@ -5,45 +5,45 @@ const categoryModel = require("../../models/categoryModel");
 const APIError = require("../apiError");
 
 exports.getSubCategoryValidator = [
-  check("id").isMongoId().withMessage("Invalid SubCategory Id format"),
+  check("id").isMongoId().withMessage("invalid subCategory id format"),
   validatorMiddleware,
 ];
 
 exports.createSubCategoryValidator = [
   check("name")
     .notEmpty()
-    .withMessage("SubCategory name can't be empty")
+    .withMessage("subCategory name can't be empty")
     .isLength({ min: 3 })
-    .withMessage("SubCategory name can't be less than 3 charachters")
+    .withMessage("subCategory name can't be less than 3 charachters")
     .isLength({ max: 50 })
-    .withMessage("SubCategory name can't be more than 50 charachters")
+    .withMessage("subCategory name can't be more than 50 charachters")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
   check("category")
     .notEmpty()
-    .withMessage("SubCategory Must belong to a parent Category")
+    .withMessage("subCategory must belong to a parent category")
     .isMongoId()
-    .withMessage("Invalid Category Id format")
+    .withMessage("invalid category id format")
     .custom(async (categoryId) => {
       const category = await categoryModel.findById({ _id: categoryId });
       if (!category) {
-        throw new APIError(`Category of id ${categoryId} does not exist`);
+        throw new APIError(`category of id ${categoryId} does not exist`);
       }
     }),
   validatorMiddleware,
 ];
 
 exports.updateSubCategoryValidator = [
-  check("id").isMongoId().withMessage("Invalid SubCategory Id format"),
+  check("id").isMongoId().withMessage("invalid subCategory id format"),
   check("category")
     .isMongoId()
-    .withMessage("Invalid Category Id format")
+    .withMessage("invalid category id format")
     .custom(async (categoryId) => {
       const category = await categoryModel.findById({ _id: categoryId });
       if (!category) {
-        throw new APIError(`Category of id ${categoryId} does not exist`);
+        throw new APIError(`category of id ${categoryId} does not exist`);
       }
     }),
   body("name").custom((val, { req }) => {
@@ -54,6 +54,6 @@ exports.updateSubCategoryValidator = [
 ];
 
 exports.deleteSubCategoryValidator = [
-  check("id").isMongoId().withMessage("Invalid SubCategory Id format"),
+  check("id").isMongoId().withMessage("invalid subCategory id format"),
   validatorMiddleware,
 ];
