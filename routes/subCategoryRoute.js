@@ -5,6 +5,8 @@ const {
   getSubCategories,
   updateSubCategory,
   deleteSubCategory,
+  uploadSubCategoryImage,
+  resizeSubCategoryImage,
 } = require("../services/subCategoryService");
 const {
   createSubCategoryValidator,
@@ -18,11 +20,21 @@ const router = express.Router();
 router
   .route("/")
   .get(getSubCategories)
-  .post(createSubCategoryValidator, createSubCategory);
+  .post(
+    uploadSubCategoryImage,
+    resizeSubCategoryImage,
+    createSubCategoryValidator,
+    createSubCategory
+  );
 router
   .route("/:id")
   .get(getSubCategoryValidator, getSubCategory)
-  .put(updateSubCategoryValidator, updateSubCategory)
+  .put(
+    uploadSubCategoryImage,
+    resizeSubCategoryImage,
+    updateSubCategoryValidator,
+    updateSubCategory
+  )
   .delete(deleteSubCategoryValidator, deleteSubCategory);
 
 module.exports = router;

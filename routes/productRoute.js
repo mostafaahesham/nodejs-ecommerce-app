@@ -23,11 +23,11 @@ const router = express.Router();
 router
   .route("/")
   .get(getProducts)
-  .post(upload.none(),createProductValidator, createProduct);
+  .post(createProductValidator, createProduct);
 router
   .route("/:id")
   .get(getProductValidator, getProduct)
   .put(updateProductValidator, updateProduct)
-  .delete(upload.none(),deleteProductValidator, deleteProduct);
+  .delete(deleteProductValidator, deleteProduct);
 
 module.exports = router;

@@ -1,5 +1,26 @@
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
+const asyncHandler = require("express-async-handler");
+
 const subCategoryModel = require("../models/subCategoryModel");
 const factory = require("./factoryHandlers");
+const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
+
+exports.resizeSubCategoryImage = asyncHandler(async (req, res, next) => {
+  const filename = `subCategory-${uuidv4()}-${Date.now()}.png`;
+  await sharp(req.file.buffer)
+    .resize(100, 100)
+    .toFormat("png")
+    .png({ quality: 50 })
+    .toFile(`static/images/subCategories/${filename}`);
+
+  req.body.image = req.hostname + filename;
+
+  next();
+});
+
+// @desc upload single Category Image
+exports.uploadSubCategoryImage = uploadSingleImage("image");
 
 // @desc    Create subCategory
 // @route   POST    /api/v1/subcategories

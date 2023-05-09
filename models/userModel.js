@@ -14,9 +14,10 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "user email is required"],
-      unique: true,
+      unique: [true, "this e-mail is already in use"],
       lowercase: true,
     },
+    image: { type: String },
     phoneNumber: {
       type: Number,
       required: [true, "user phone number is required"],
@@ -31,10 +32,14 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "vendor", "admin"],
       default: "user",
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = new mongoose.Model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

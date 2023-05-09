@@ -5,11 +5,8 @@ module.exports = new mongoose.Schema({
     type: String,
     required: [true, "Variant Color is required"],
   },
-  // colorImage: {
-  //   type: String,
-  //   required: [true, "Variant Color Image is required"],
-  // },
-  // images: [String],
+  image: { type: String },
+  images: [String],
   sizes: [
     {
       size: {
