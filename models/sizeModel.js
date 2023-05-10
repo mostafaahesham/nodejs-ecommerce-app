@@ -4,11 +4,11 @@ module.exports = new mongoose.Schema({
   size: {
     name: {
       type: String,
-      required: [true, "variant size is required"],
+      // required: [true, "variant size is required"],
     },
     quantity: {
       type: Number,
-      required: [true, "variant quantity is required"],
+      // required: [true, "variant quantity is required"],
       min: [0, "quantity can't be negative"],
     },
     availability: {

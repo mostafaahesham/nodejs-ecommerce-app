@@ -18,23 +18,39 @@ const multerFilter = function (req, file, cb) {
 
 const upload = multer({ storage: memoryStorage, fileFilter: multerFilter });
 
-exports.uploadProductVariantImages = upload.array([
-  { name: "variants[0][image]", maxCount: 1 },
-  { name: "variants[0][images]", maxCount: 5 },
+exports.uploadProductVariantImages = upload.fields([
+  { name: "variants[0][image]" },
+  { name: "variants[0][images]" },
+  { name: "variants[1][image]" },
+  { name: "variants[1][images]" },
+  { name: "variants[2][image]" },
+  { name: "variants[2][images]" },
 ]);
 
-exports.uploadProductVariantImages = upload.single("variants[0][image]");
-
 exports.resizeProductVariantImages = asyncHandler(async (req, res, next) => {
-    console.log(req.file);
-  //     const filename = `product-${uuidv4()}-${Date.now()}.png`;
-  //     await sharp(req.file.buffer)
-  //       .resize(100, 100)
-  //       .toFormat("png")
-  //       .png({ quality: 50 })
-  //       .toFile(`static/images/subCategories/${filename}`);
+  const variants = req.body.variants;
+  const variantsImagesCount = [];
 
-  //     req.body.image = filename;
+  // number of files
+  const files = req.files;
+  const fileKeys = Object.keys(files);
+  const numberOfVariants = fileKeys.length / 2;
+  console.log(fileKeys);
+  console.log("number of variants: " + numberOfVariants);
+
+  for (
+    let i = 1, j = 0;
+    i <= fileKeys.length && j < numberOfVariants;
+    i += 2, j++
+  ) {
+    variantsImagesCount.push(files[fileKeys[i]].length);
+    const nullImages = [];
+    for (let k = 0; k < variantsImagesCount[j]; k++) {
+      nullImages.push("null");
+    }
+    req.body.variants[j].image = "null";
+    req.body.variants[j].images = nullImages;
+  }
 
   next();
 });

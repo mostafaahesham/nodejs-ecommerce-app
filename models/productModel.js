@@ -50,6 +50,8 @@ const productSchema = new mongoose.Schema(
         return this.currentPrice;
       },
     },
+    // image: String,
+    // images: [String],
     discount: {
       type: Number,
       trim: true,
