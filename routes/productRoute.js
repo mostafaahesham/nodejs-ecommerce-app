@@ -10,6 +10,8 @@ const {
   getProduct,
   updateProduct,
   deleteProduct,
+  uploadProductVariantImages,
+  resizeProductVariantImages,
 } = require("../services/productService");
 const {
   getProductValidator,
@@ -23,7 +25,12 @@ const router = express.Router();
 router
   .route("/")
   .get(getProducts)
-  .post(createProductValidator, createProduct);
+  .post(
+    uploadProductVariantImages,
+    resizeProductVariantImages,
+    createProductValidator,
+    createProduct
+  );
 router
   .route("/:id")
   .get(getProductValidator, getProduct)

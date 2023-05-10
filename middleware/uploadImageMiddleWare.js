@@ -1,17 +1,18 @@
 const multer = require("multer");
-const APIError = require("../utils/apiError");
 const { v4: uuidv4 } = require("uuid");
+const APIError = require("../utils/apiError");
 
-exports.uploadSingleImage = (fieldName) => {
+exports.uploadSingleImage = (fieldName, prefix, path) => {
   const memoryStorage = multer.memoryStorage();
 
   const diskStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "static/images/categories");
+      cb(null, `static/images/${path}`);
     },
     filename: function (req, file, cb) {
       const ext = file.mimetype.split("/")[1];
-      const filename = `category-${uuidv4()}-${Date.now()}.${ext}`;
+      const filename = `${prefix}-${uuidv4()}-${Date.now()}.${ext}`;
+      req.body.image = filename;
       cb(null, filename);
     },
   });
@@ -24,7 +25,7 @@ exports.uploadSingleImage = (fieldName) => {
     }
   };
 
-  const upload = multer({ storage: memoryStorage, fileFilter: multerFilter });
+  const upload = multer({ storage: diskStorage, fileFilter: multerFilter });
 
   return upload.single(fieldName);
 };

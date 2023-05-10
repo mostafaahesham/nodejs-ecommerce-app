@@ -9,9 +9,8 @@ const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
 exports.resizeSubCategoryImage = asyncHandler(async (req, res, next) => {
   const filename = `subCategory-${uuidv4()}-${Date.now()}.png`;
   await sharp(req.file.buffer)
-    .resize(100, 100)
     .toFormat("png")
-    .png({ quality: 50 })
+    .png({ quality: 100 })
     .toFile(`static/images/subCategories/${filename}`);
 
   req.body.image = filename;
@@ -20,7 +19,11 @@ exports.resizeSubCategoryImage = asyncHandler(async (req, res, next) => {
 });
 
 // @desc upload single Category image
-exports.uploadSubCategoryImage = uploadSingleImage("image");
+exports.uploadSubCategoryImage = uploadSingleImage(
+  "image",
+  "subCategory",
+  "subCategories"
+);
 
 // @desc    Create subCategory
 // @route   POST    /api/v1/subcategories

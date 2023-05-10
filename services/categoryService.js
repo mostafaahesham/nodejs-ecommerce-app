@@ -9,11 +9,10 @@ const factory = require("./factoryHandlers");
 const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
 
 exports.resizeCategoryImage = asyncHandler(async (req, res, next) => {
-  const filename = `category-${uuidv4()}-${Date.now()}.png`;
+  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
   await sharp(req.file.buffer)
-    .resize(100, 100)
     .toFormat("png")
-    .png({ quality: 50 })
+    .png({ quality: 100 })
     .toFile(`static/images/categories/${filename}`);
 
   req.body.image = filename;
@@ -22,7 +21,11 @@ exports.resizeCategoryImage = asyncHandler(async (req, res, next) => {
 });
 
 // @desc upload single Category Image
-exports.uploadCategoryImage = uploadSingleImage("image");
+exports.uploadCategoryImage = uploadSingleImage(
+  "image",
+  "category",
+  "categories"
+);
 
 // @desc    Create category
 // @route   POST    /api/v1/categories

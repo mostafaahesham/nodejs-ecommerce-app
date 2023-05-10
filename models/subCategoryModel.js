@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
+const asyncHandler = require("express-async-handler");
 
 const subCategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
       trim: true,
+      unique: false,
       required: [true, "subCategory is required"],
-      unique: [true, "subCategory must be unique"],
       minLength: [3, "subCategory name too short"],
       maxLength: [50, "subCategory name too long"],
     },

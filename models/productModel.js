@@ -5,10 +5,10 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Product Name is required"],
+      required: [true, "product name is required"],
       trim: true,
-      minlength: [3, "Too short Product Name"],
-      maxlength: [50, "Too long Product Name"],
+      minlength: [3, "product name too short"],
+      maxlength: [50, "product name too long"],
     },
     slug: {
       type: String,
@@ -17,28 +17,28 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, "Product Description is required"],
-      minlength: [10, "Too short Product Description"],
-      maxlength: [200, "Too long Product Description"],
+      required: [true, "product description is required"],
+      minlength: [10, "product description too short"],
+      maxlength: [200, "product description too long"],
     },
     brand: {
       type: mongoose.Schema.ObjectId,
       ref: "Brand",
-      required: [true, "Brand is required"],
+      required: [true, "product must belong to a brand"],
     },
     category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
-      required: [true, "Product must belong to a category"],
+      required: [true, "product must belong to a category"],
     },
     subCategory: {
       type: mongoose.Schema.ObjectId,
       ref: "SubCategory",
-      required: [true, "Product must belong to a SubCategory"],
+      required: [true, "product must belong to a subCategory"],
     },
     currentPrice: {
       type: Number,
-      required: [true, "Product CurrentPrice is required"],
+      required: [true, "product currentPrice is required"],
       trim: true,
       min: [1, "min price must be >= 1"],
     },
@@ -53,9 +53,15 @@ const productSchema = new mongoose.Schema(
     discount: {
       type: Number,
       trim: true,
-      min: [1, "min price must be >= 1"],
+      min: [1, "min discount must be >= 1%"],
       default: function () {
         return Math.ceil((1 - this.discountedPrice / this.currentPrice) * 100);
+      },
+    },
+    sale: {
+      type: Boolean,
+      default: function () {
+        return this.discountedPrice == this.currentPrice ? false : true;
       },
     },
     ratingsAverage: {
@@ -68,7 +74,13 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    variants: [variantSchema],
+    variants: {
+      type: [variantSchema],
+      validator: function (variants) {
+        return variants.length >= 1;
+      },
+      message: "min number of variants is 1",
+    },
   },
   { timestamps: true }
 );

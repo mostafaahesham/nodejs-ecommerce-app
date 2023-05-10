@@ -10,9 +10,8 @@ const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
 exports.resizeBrandImage = asyncHandler(async (req, res, next) => {
   const filename = `brand-${uuidv4()}-${Date.now()}.png`;
   await sharp(req.file.buffer)
-    .resize(100, 100)
     .toFormat("png")
-    .png({ quality: 50 })
+    .png({ quality: 100 })
     .toFile(`static/images/brands/${filename}`);
 
   req.body.image = filename;
@@ -21,7 +20,7 @@ exports.resizeBrandImage = asyncHandler(async (req, res, next) => {
 });
 
 // @desc upload single Brand Image
-exports.uploadBrandImage = uploadSingleImage("image");
+exports.uploadBrandImage = uploadSingleImage("image", "brand", "brands");
 
 // @desc    Create brand
 // @route   POST    /api/v1/brands
