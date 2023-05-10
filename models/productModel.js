@@ -50,8 +50,6 @@ const productSchema = new mongoose.Schema(
         return this.currentPrice;
       },
     },
-    // image: String,
-    // images: [String],
     discount: {
       type: Number,
       trim: true,
@@ -79,9 +77,9 @@ const productSchema = new mongoose.Schema(
     variants: {
       type: [variantSchema],
       validator: function (variants) {
-        return variants.length >= 1;
+        return variants.length >= 1 && variants.length <= 10;
       },
-      message: "min number of variants is 1",
+      message: "min number of variants is 1 & maximum number of varints is 10",
     },
   },
   { timestamps: true }

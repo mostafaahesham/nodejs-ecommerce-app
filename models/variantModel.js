@@ -4,18 +4,21 @@ const sizeSchema = require("./sizeModel");
 module.exports = new mongoose.Schema({
   color: {
     type: String,
-    // required: [true, "variant color is required"],
+    required: [true, "variant color is required"],
   },
-  image: { type: String, required: true },
-  images: {
+  variantImage: {
+    type: String,
+    required: [true, "variantImage is required"],
+  },
+  variantImages: {
     type: [String],
-    // required: [true, "variant images are required"],
-    // validate: {
-    //   validator: function (images) {
-    //     return images.length >= 1 && images.length <= 5;
-    //   },
-    //   message: "min number of images is 1, max number of images is 5",
-    // },
+    required: [true, "variant images are required"],
+    validate: {
+      validator: function (variantImages) {
+        return variantImages.length >= 1 && variantImages.length <= 5;
+      },
+      msg: "min number of variantImages is 1, max number of variantImages is 5",
+    },
   },
   sizes: {
     type: [sizeSchema],

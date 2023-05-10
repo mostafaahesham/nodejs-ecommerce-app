@@ -18,14 +18,12 @@ const multerFilter = function (req, file, cb) {
 
 const upload = multer({ storage: memoryStorage, fileFilter: multerFilter });
 
-exports.uploadProductVariantImages = upload.fields([
-  { name: "variants[0][image]" },
-  { name: "variants[0][images]" },
-  { name: "variants[1][image]" },
-  { name: "variants[1][images]" },
-  { name: "variants[2][image]" },
-  { name: "variants[2][images]" },
-]);
+exports.uploadProductVariantImages = upload.fields(
+  Array.from({ length: 10 }, (_, index) => [
+    { name: `variants[${index}][variantImages]` },
+    { name: `variants[${index}][variantImage]` },
+  ]).flatMap((arr) => arr)
+);
 
 exports.resizeProductVariantImages = asyncHandler(async (req, res, next) => {
   const variants = req.body.variants;
@@ -35,21 +33,40 @@ exports.resizeProductVariantImages = asyncHandler(async (req, res, next) => {
   const files = req.files;
   const fileKeys = Object.keys(files);
   const numberOfVariants = fileKeys.length / 2;
-  console.log(fileKeys);
-  console.log("number of variants: " + numberOfVariants);
+  // console.log(fileKeys);
 
   for (
     let i = 1, j = 0;
     i <= fileKeys.length && j < numberOfVariants;
     i += 2, j++
   ) {
-    variantsImagesCount.push(files[fileKeys[i]].length);
-    const nullImages = [];
-    for (let k = 0; k < variantsImagesCount[j]; k++) {
-      nullImages.push("null");
+    const color = variants[j].color;
+    const variantColorImage = `product-${color}-${uuidv4()}-${Date.now()}.png`;
+    if (files[fileKeys[j*2]].length > 1) {
+      console.log(files[fileKeys[j*2]].length);
+      throw new APIError("only one image is allowed for variantImage", 404);
     }
-    req.body.variants[j].image = "null";
-    req.body.variants[j].images = nullImages;
+    await sharp(files[fileKeys[j]][0].buffer)
+      .toFormat("png")
+      .png({ quality: 100 })
+      .toFile(`static/images/products/${variantColorImage}`);
+
+    variantsImagesCount.push(files[fileKeys[i]].length);
+    const variantImages = [];
+    for (let k = 0; k < variantsImagesCount[j]; k++) {
+      const variantColorImages = `product-${color}-${uuidv4()}-${Date.now()}.png`;
+      await sharp(files[fileKeys[i]][k].buffer)
+        .toFormat("png")
+        .png({ quality: 100 })
+        .toFile(`static/images/products/${variantColorImages}`);
+      variantImages.push(
+        `${process.env.BASE_URL}/images/products/${variantColorImages}`
+      );
+    }
+    req.body.variants[
+      j
+    ].variantImage = `${process.env.BASE_URL}/images/products/${variantColorImage}`;
+    req.body.variants[j].variantImages = variantImages;
   }
 
   next();
