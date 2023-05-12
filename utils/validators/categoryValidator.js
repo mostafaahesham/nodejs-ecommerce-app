@@ -1,6 +1,9 @@
 const { check, body } = require("express-validator");
 const { default: slugify } = require("slugify");
+const asyncHandler = require("express-async-handler");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const subCategoryModel = require("../../models/subCategoryModel");
+const APIError = require("../apiError");
 
 exports.getCategoryValidator = [
   check("id").isMongoId().withMessage("invalid category id format"),
@@ -34,6 +37,21 @@ exports.updateCategoryValidator = [
 ];
 
 exports.deleteCategoryValidator = [
-  check("id").isMongoId().withMessage("invalid category id format"),
+  check("id")
+    .isMongoId()
+    .withMessage("invalid category id format")
+    .custom(
+      asyncHandler(async (categoryId) => {
+        const subCategoriesCount = await subCategoryModel.countDocuments({
+          category: categoryId,
+        });
+        if (subCategoriesCount) {
+          throw new APIError(
+            `failed to delete category of id ${categoryId}, ${subCategoriesCount} subCategories fall under this category`
+          );
+        }
+        return true;
+      })
+    ),
   validatorMiddleware,
 ];

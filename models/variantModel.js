@@ -22,12 +22,12 @@ module.exports = new mongoose.Schema({
   },
   sizes: {
     type: [sizeSchema],
-    // required: [true, "variant sizes are required"],
-    // validate: {
-    //   validator: function (sizes) {
-    //     return sizes.length >= 1;
-    //   },
-    //   message: "min number of sizes >= 1",
-    // },
+    required: [true, "variant sizes are required"],
+    validate: {
+      validator: function (sizes) {
+        return sizes.length >= 1;
+      },
+      message: "min number of sizes >= 1",
+    },
   },
 });

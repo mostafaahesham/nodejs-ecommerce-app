@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const asyncHandler = require("express-async-handler");
 
 const subCategorySchema = new mongoose.Schema(
   {

@@ -18,7 +18,6 @@ const router = express.Router();
 
 router.route("/").get(getSubCategories).post(
   uploadSubCategoryImage,
-  // resizeSubCategoryImage,
   createSubCategoryValidator,
   createSubCategory
 );
@@ -27,7 +26,6 @@ router
   .get(getSubCategoryValidator, getSubCategory)
   .put(
     uploadSubCategoryImage,
-    // resizeSubCategoryImage,
     updateSubCategoryValidator,
     updateSubCategory
   )
