@@ -12,7 +12,7 @@ exports.uploadSingleImage = (fieldName, prefix, path) => {
     filename: function (req, file, cb) {
       const ext = file.mimetype.split("/")[1];
       const filename = `${prefix}-${uuidv4()}-${Date.now()}.${ext}`;
-      req.body.image = filename;
+      req.body.image = `${filename}`;
       cb(null, filename);
     },
   });

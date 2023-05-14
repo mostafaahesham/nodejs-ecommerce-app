@@ -11,7 +11,7 @@ exports.resizeBrandImage = asyncHandler(async (req, res, next) => {
   const filename = `brand-${uuidv4()}-${Date.now()}.png`;
   await sharp(req.file.buffer)
     .toFormat("png")
-    .png({ quality: 100 })
+    .png({ quality: 10 })
     .toFile(`static/images/brands/${filename}`);
 
   req.body.image = filename;

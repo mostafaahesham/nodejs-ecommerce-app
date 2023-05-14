@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -41,5 +42,25 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+const setImageURL = (doc) => {
+  if (doc.image) {
+    const imageURL = `${process.env.BASE_URL}/images/users/${doc.image}`;
+    doc.image = imageURL;
+  }
+};
+
+userSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+
+userSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
+
+userSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
 
 module.exports = mongoose.model("User", userSchema);
