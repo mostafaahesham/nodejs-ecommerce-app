@@ -41,3 +41,23 @@ exports.signIn = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ data: user, token: token });
 });
+
+exports.auth = asyncHandler(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(new APIError("not authorized", 401));
+  }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  const user = await userModel.findById(decoded.userId);
+  if (!user) {
+    return next(new APIError(`user of id ${decoded.userId}`));
+  }
+  next();
+});
