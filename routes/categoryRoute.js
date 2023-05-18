@@ -22,7 +22,6 @@ router
   .route("/")
   .get(getCategories)
   .post(
-    auth.auth,
     uploadCategoryImage,
     createCategoryValidator,
     createCategory
@@ -30,7 +29,14 @@ router
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
-  .put(uploadCategoryImage, updateCategoryValidator, updateCategory)
-  .delete(deleteCategoryValidator, deleteCategory);
+  .put(
+    uploadCategoryImage,
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(
+    deleteCategoryValidator,
+    deleteCategory
+  );
 
 module.exports = router;

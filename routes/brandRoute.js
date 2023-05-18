@@ -15,6 +15,8 @@ const {
   createBrandValidator,
 } = require("../utils/validators/brandValidator");
 
+const auth = require("../services/authService");
+
 const router = express.Router();
 
 router
