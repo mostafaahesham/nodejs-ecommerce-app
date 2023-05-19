@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
 const factory = require("./factoryHandlers");
 const APIError = require("../utils/apiError");
+const generateToken = require("../utils/generateToken");
 
 const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
 
@@ -71,3 +72,57 @@ exports.changeUserPassword = asyncHandler(async (req, res, next) => {
 // @route   DELETE    /api/v1/users/:id
 // @access  Private
 exports.deleteUser = factory.deleteOne(userModel);
+
+// @desc    Get Logged user Data
+// @route   GET /api/v1/users/getme
+// @access  Private
+exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+
+// @desc    Update logged user password
+// @route   PUT /api/v1/users/updatemypassword
+// @access  Private
+exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
+  const user = await userModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 12),
+      passwordChangedAt: Date.now(),
+    },
+    {
+      new: true,
+    }
+  );
+
+  const token = generateToken(user._id);
+
+  res.status(200).json({ data: user, token: token });
+});
+
+// @desc    Update logged user data (without password, role)
+// @route   PUT /api/v1/users/updateme
+// @access  Private
+exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
+  const user = await userModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({ data: user });
+});
+
+// @desc    Deactivate logged user
+// @route   DELETE /api/v1/users/deleteme
+// @access  Private
+exports.deleteLoggedUserData = asyncHandler(async (req, res, next) => {
+  await userModel.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({ status: "Success" });
+});

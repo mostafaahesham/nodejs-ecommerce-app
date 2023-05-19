@@ -6,6 +6,10 @@ const {
   updateUser,
   changeUserPassword,
   deleteUser,
+  getLoggedUserData,
+  updateLoggedUserPassword,
+  updateLoggedUserData,
+  deleteLoggedUserData,
   uploadUserImage,
 } = require("../services/userService");
 const {
@@ -19,6 +23,15 @@ const {
 const auth = require("../services/authService");
 
 const router = express.Router();
+
+router.use(auth.authenticate);
+
+router.get("/getme", getLoggedUserData, getUser);
+router.put("/changemymassword", updateLoggedUserPassword);
+router.put("/updateme", updateLoggedUserData);
+router.delete("/deleteme", deleteLoggedUserData);
+
+router.use(auth.authorize("admin"));
 
 router.put(
   "/changePassword/:id",
