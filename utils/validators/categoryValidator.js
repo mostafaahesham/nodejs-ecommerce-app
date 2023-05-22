@@ -1,9 +1,12 @@
 const { check, body } = require("express-validator");
 const { default: slugify } = require("slugify");
 const asyncHandler = require("express-async-handler");
+
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
-const subCategoryModel = require("../../models/subCategoryModel");
+
 const APIError = require("../apiError");
+
+const subCategoryModel = require("../../models/subCategoryModel");
 
 exports.getCategoryValidator = [
   check("id").isMongoId().withMessage("invalid category id format"),

@@ -2,11 +2,11 @@ const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
 
-const APIError = require("../utils/apiError");
+const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
+
+const factory = require("./factoryHandlers");
 
 const categoryModel = require("../models/categoryModel");
-const factory = require("./factoryHandlers");
-const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
 
 exports.resizeCategoryImage = asyncHandler(async (req, res, next) => {
   const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;

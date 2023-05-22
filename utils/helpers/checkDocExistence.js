@@ -1,12 +1,17 @@
-const asyncHandler = require("express-async-handler");
 const APIError = require("../apiError");
 
-const checkDocumentExistance = async (Model, id) => {
-    const doc = await Model.findById(id);
-    if (!doc) {
-      throw new APIError(`No ${Model.modelName} of id ${id} exists`, 404);
-    }
-    return doc;
-  };
+const checkDocExistance = async (Model, key, val) => {
+  let doc;
+  if (key == "id") {
+    doc = await Model.findById(val);
+  }
+  if (key == "email") {
+    doc = await Model.findOne({ email: val });
+  }
+  if (!doc) {
+    return new APIError(`no ${Model.modelName} of ${key}: ${val} exists`, 404);
+  }
+  return doc;
+};
 
-module.exports = checkDocumentExistance;
+module.exports = checkDocExistance;

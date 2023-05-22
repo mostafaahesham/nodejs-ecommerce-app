@@ -1,9 +1,13 @@
 const { check, body } = require("express-validator");
 const { default: slugify } = require("slugify");
 const asyncHandler = require("express-async-handler");
+
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const checkDocExistence = require("../helpers/checkDocExistence");
+
 const categoryModel = require("../../models/categoryModel");
 const productModel = require("../../models/productModel");
+
 const APIError = require("../apiError");
 
 exports.getSubCategoryValidator = [
@@ -28,12 +32,9 @@ exports.createSubCategoryValidator = [
     .withMessage("subCategory must belong to a parent category")
     .isMongoId()
     .withMessage("invalid category id format")
-    .custom(async (categoryId) => {
-      const category = await categoryModel.findById({ _id: categoryId });
-      if (!category) {
-        throw new APIError(`category of id ${categoryId} does not exist`);
-      }
-    }),
+    .custom(async (categoryId) =>
+      checkDocExistence(categoryModel, "id", categoryId)
+    ),
   validatorMiddleware,
 ];
 
@@ -42,12 +43,9 @@ exports.updateSubCategoryValidator = [
   check("category")
     .isMongoId()
     .withMessage("invalid category id format")
-    .custom(async (categoryId) => {
-      const category = await categoryModel.findById({ _id: categoryId });
-      if (!category) {
-        throw new APIError(`category of id ${categoryId} does not exist`);
-      }
-    }),
+    .custom(async (categoryId) =>
+      checkDocExistence(categoryModel, "id", categoryId)
+    ),
   body("name").custom((val, { req }) => {
     req.body.slug = slugify(val);
     return true;

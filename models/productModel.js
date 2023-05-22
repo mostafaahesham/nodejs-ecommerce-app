@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const variantSchema = require("./variantModel");
 
 const productSchema = new mongoose.Schema(

@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const { check, body } = require("express-validator");
-const { default: slugify } = require("slugify");
+const slugify = require("slugify");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const checkDocExistence = require("../helpers/checkDocExistence");
 const userModel = require("../../models/userModel");
 const APIError = require("../apiError");
 
@@ -55,10 +56,16 @@ exports.createUserValidator = [
 
 exports.updateUserValidator = [
   check("id").isMongoId().withMessage("invalid user id format"),
-  body("name").custom((val, { req }) => {
-    req.body.slug = slugify(val);
-    return true;
-  }),
+  check("name")
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  check("phoneNumber")
+    .optional()
+    .isMobilePhone("ar-EG")
+    .withMessage("phone number must be egyptian"),
   validatorMiddleware,
 ];
 
@@ -73,10 +80,7 @@ exports.changeUserPasswordValidator = [
     .isLength({ min: 8 })
     .withMessage("password must be at least 8 characters")
     .custom(async (val, { req }) => {
-      const user = await userModel.findById(req.params.id);
-      if (!user) {
-        throw new APIError(`no user of id ${req.params.id} exists`);
-      }
+      const user = await checkDocExistence(userModel, "email", req.params.id);
       // verify current password
       const verifyCurrentPassword = await bcrypt.compare(
         req.body.currentPassword,

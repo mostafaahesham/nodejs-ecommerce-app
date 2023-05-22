@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const APIError = require("../utils/apiError");
+
 const ApiFeatures = require("../utils/apiFeatures");
 const checkDocExistence = require("../utils/helpers/checkDocExistence");
 
@@ -11,7 +11,7 @@ exports.createOne = (Model) =>
 
 exports.getOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const doc = await checkDocExistence(Model, req.params.id);
+    const doc = await checkDocExistence(Model, "id", req.params.id);
     res.status(200).json({ data: doc });
   });
 
@@ -30,7 +30,7 @@ exports.getAll = (Model) =>
 
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    let doc = await checkDocExistence(Model, req.params.id);
+    let doc = await checkDocExistence(Model, "id", req.params.id);
     doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
@@ -39,7 +39,7 @@ exports.updateOne = (Model) =>
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    await checkDocExistence(Model, req.params.id);
+    await checkDocExistence(Model, "id", req.params.id);
     await Model.findOneAndRemove(req.params.id);
 
     res

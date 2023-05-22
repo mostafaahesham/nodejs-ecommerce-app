@@ -2,9 +2,11 @@ const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
-const productModel = require("../models/productModel");
+
 const factory = require("./factoryHandlers");
 const APIError = require("../utils/apiError");
+
+const productModel = require("../models/productModel");
 
 const memoryStorage = multer.memoryStorage();
 

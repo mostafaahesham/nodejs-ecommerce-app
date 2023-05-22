@@ -45,9 +45,16 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "vendor", "admin"],
       default: "user",
     },
-    active: {
+    isActive: {
       type: Boolean,
       default: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    confirmationCode: {
+      type: String,
     },
   },
   {

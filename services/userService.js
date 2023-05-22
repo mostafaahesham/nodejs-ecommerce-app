@@ -1,11 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
-const userModel = require("../models/userModel");
-const factory = require("./factoryHandlers");
-const APIError = require("../utils/apiError");
-const generateToken = require("../utils/generateToken");
 
 const { uploadSingleImage } = require("../middleware/uploadImageMiddleWare");
+const factory = require("./factoryHandlers");
+
+const generateToken = require("../utils/generateToken");
+const checkDocExistence = require("../utils/helpers/checkDocExistence");
+
+const userModel = require("../models/userModel");
 
 // @desc upload single Brand Image
 exports.uploadUserImage = uploadSingleImage("image", "user", "users");
@@ -29,6 +31,8 @@ exports.getUsers = factory.getAll(userModel);
 // @route   PUT    /api/v1/users/:id
 // @access  Private
 exports.updateUser = asyncHandler(async (req, res, next) => {
+  await checkDocExistence(userModel, "id", req.params.id);
+
   const doc = await userModel.findByIdAndUpdate(
     req.params.id,
     {
@@ -42,9 +46,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
       new: true,
     }
   );
-  if (!doc) {
-    return next(new APIError(`No user of id ${req.params.id} exists`, 404));
-  }
+  console.log(req.body.name);
   res.status(200).json({ data: doc });
 });
 
@@ -52,6 +54,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 // @route   PUT    /api/v1/users/changePassword/:id
 // @access  Private
 exports.changeUserPassword = asyncHandler(async (req, res, next) => {
+  await checkDocExistence(userModel, "id", req.params.id);
   const doc = await userModel.findByIdAndUpdate(
     req.params.id,
     {
@@ -62,9 +65,6 @@ exports.changeUserPassword = asyncHandler(async (req, res, next) => {
       new: true,
     }
   );
-  if (!doc) {
-    return next(new APIError(`No user of id ${req.params.id} exists`, 404));
-  }
   res.status(200).json({ data: doc });
 });
 
@@ -105,24 +105,15 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/users/updateme
 // @access  Private
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
-  const user = await userModel.findByIdAndUpdate(
-    req.user._id,
-    {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-    },
-    { new: true }
-  );
-
-  res.status(200).json({ data: user });
+  req.params.id = req.user._id;
+  next();
 });
 
 // @desc    Deactivate logged user
 // @route   DELETE /api/v1/users/deleteme
 // @access  Private
 exports.deleteLoggedUserData = asyncHandler(async (req, res, next) => {
-  await userModel.findByIdAndUpdate(req.user._id, { active: false });
+  await userModel.findByIdAndUpdate(req.user._id, { isActive: false });
 
   res.status(204).json({ status: "Success" });
 });

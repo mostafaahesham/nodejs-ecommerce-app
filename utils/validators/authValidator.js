@@ -1,10 +1,10 @@
-const { check } = require("express-validator");
+const { check, body, custom } = require("express-validator");
 const { default: slugify } = require("slugify");
 const bcrypt = require("bcrypt");
-const asyncHandler = require("express-async-handler");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
-const userModel = require("../../models/userModel");
 const APIError = require("../apiError");
+const checkDocExistence = require("../helpers/checkDocExistence");
+const userModel = require("../../models/userModel");
 
 exports.signUpValidator = [
   check("name")
@@ -54,18 +54,48 @@ exports.signInValidator = [
     .notEmpty()
     .withMessage("e-mail is required")
     .isEmail()
-    .withMessage("invalid email address")
-    .custom((val) => {
-      const user = userModel.findOne({ email: val });
-      if (!user) {
-        throw new APIError("incorrect email or password");
-      }
-      return true;
-    }),
+    .withMessage("invalid email address"),
   check("password")
     .notEmpty()
     .withMessage("password is required")
     .isLength({ min: 8 })
     .withMessage("password must be at least 8 characters"),
+  validatorMiddleware,
+];
+
+exports.forgotPasswordValidator = [
+  check("email")
+    .notEmpty()
+    .withMessage("e-mail is required")
+    .isEmail()
+    .withMessage("invalid email address")
+    .custom(async (val) => {
+      await checkDocExistence(userModel, "email", val);
+    }),
+  validatorMiddleware,
+];
+
+exports.resetPasswordValidator = [
+  check("email")
+    .notEmpty()
+    .withMessage("e-mail is required")
+    .isEmail()
+    .withMessage("invalid email address"),
+  body("newPassword")
+    .notEmpty()
+    .withMessage("password is required")
+    .isLength({ min: 8 })
+    .withMessage("password must be at least 8 characters"),
+  body("newPasswordConfirm")
+    .notEmpty()
+    .withMessage("password confirmation is required")
+    .isLength({ min: 8 })
+    .withMessage("password must be at least 8 characters")
+    .custom((val, { req }) => {
+      if (val != req.body.newPassword) {
+        throw new APIError("password confirmation incorrect", 400);
+      }
+      return true;
+    }),
   validatorMiddleware,
 ];
