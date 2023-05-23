@@ -32,8 +32,10 @@ app.use(express.static(path.join(__dirname, "static")));
 
 if (process.env.NODE_ENV == "dev") {
   app.use(morgan("dev"));
-  console.log(`mode: ${process.env.NODE_ENV}`);
 }
+
+console.log(`mode: ${process.env.NODE_ENV}`);
+console.log(`BASE_URL: ${process.env.BASE_URL}`);
 
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/subcategories", subCategoryRoute);

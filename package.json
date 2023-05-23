@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "set NODE_ENV=dev && set BASE_URL= http://localhost:8000 && nodemon server.js",
-    "prod": "set NODE_ENV=prod && set BASE_URL= https://e-shop-app-5jyu.onrender.com && node server.js",
+    "dev": "set NODE_ENV=dev && set BASE_URL=http://localhost:8000&& nodemon server.js",
+    "prod": "set NODE_ENV=prod && set BASE_URL=https://e-shop-app-5jyu.onrender.com&& node server.js",
     "build": "npm install"
   },
   "keywords": [],
