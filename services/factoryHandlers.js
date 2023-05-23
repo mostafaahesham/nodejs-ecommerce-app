@@ -44,5 +44,5 @@ exports.deleteOne = (Model) =>
 
     res
       .status(200)
-      .json({ msg: `${Model.modelName} of id ssssssssss ${req.params.id} deleted` });
+      .json({ msg: `${Model.modelName} of id ${req.params.id} deleted` });
   });

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node":"14.x"
+  },
   "scripts": {
     "dev": "set NODE_ENV=dev && set BASE_URL=http://localhost:8000&& nodemon server.js",
     "prod": "set NODE_ENV=prod && set BASE_URL=https://e-shop-app-5jyu.onrender.com&& node server.js",

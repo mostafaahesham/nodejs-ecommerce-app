@@ -8,7 +8,7 @@ exports.uploadSingleImage = (fieldName, prefix, path) => {
 
   const diskStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, `images/${path}`);
+      cb(null, `static/images/${path}`);
     },
     filename: function (req, file, cb) {
       const ext = file.mimetype.split("/")[1];
