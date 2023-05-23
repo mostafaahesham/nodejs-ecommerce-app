@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "prod": "node server.js",
-    "build":"npm install"
+    "dev": "BASE_URL = http://localhost:8000&& nodemon server.js",
+    "prod": "BASE_URL = https://e-shop-app-5jyu.onrender.com && node server.js",
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
