@@ -1,0 +1,50 @@
+{
+  "categories": {
+    "Men": "646c6a988cfb080544d2e13b",
+    "Women": {
+      "id": "646c6ad08cfb080544d2e13e",
+      "subCategories": [
+        {
+          "name": "Accessories",
+          "image": "https://iili.io/HgrRcmX.png"
+        },
+        {
+          "name": "Dresses & Jumpsuits",
+          "image": "https://iili.io/HgrRaet.png"
+        },
+        {
+          "name": "Jackets & Coats",
+          "image": "https://iili.io/HgrRRgp.png"
+        },
+        {
+          "name": "Trousers & Jeans",
+          "image": ""
+        },
+        {
+          "name": "Shirts & Blouses",
+          "image": ""
+        },
+        {
+          "name": "Shoes",
+          "image": ""
+        },
+        {
+          "name": "Shorts & Skirts",
+          "image": ""
+        },
+        {
+          "name": "Suits & Blazers",
+          "image": ""
+        },
+        {
+          "name": "Sweatshirts & Knitwear",
+          "image": "https://iili.io/HgrRxzg.png"
+        },
+        {
+          "name": "T-shirts & Tops",
+          "image": "https://iili.io/HgrRKgV.png"
+        }
+      ]
+    }
+  }
+}

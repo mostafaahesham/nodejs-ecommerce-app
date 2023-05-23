@@ -2,14 +2,19 @@ const APIError = require("../apiError");
 
 const checkDocExistance = async (Model, key, val) => {
   let doc;
-  if (key == "id") {
-    doc = await Model.findById(val);
-  }
-  if (key == "email") {
-    doc = await Model.findOne({ email: val });
+  switch (key) {
+    case "id":
+      doc = await Model.findById(val);
+      break;
+    case "email":
+      doc = await Model.findOne({ email: val });
+      break;
+    default:
+      break;
   }
   if (!doc) {
-    return new APIError(`no ${Model.modelName} of ${key}: ${val} exists`, 404);
+    console.log(doc);
+    throw new APIError(`no ${Model.modelName} of ${key}: ${val} exists`, 404);
   }
   return doc;
 };

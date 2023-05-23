@@ -42,6 +42,9 @@ exports.signUp = asyncHandler(async (req, res, next) => {
   res.status(201).json({ data: user, token: token });
 });
 
+// @desc    Verify email
+// @route   GET    /api/v1/auth/verfifyemail/:code
+// @access  Public
 exports.verifyEmail = asyncHandler(async (req, res, next) => {
   console.log(req.params.code);
 
@@ -122,7 +125,6 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
 exports.authorize = (...roles) =>
   asyncHandler(async (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      console.log(req.user.role);
       return next(new APIError("not authorized", 403));
     }
     next();
