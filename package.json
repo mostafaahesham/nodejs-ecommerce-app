@@ -2,7 +2,7 @@
   "name": "nodejs-ecommerce-api-v1",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "set NODE_ENV=prod && set BASE_URL=https://cyan-bluefish-garb.cyclic.app&& node server.js",
   "engines": {
     "node":"18.x"
   },
