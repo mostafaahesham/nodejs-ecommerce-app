@@ -2,13 +2,13 @@
   "name": "nodejs-ecommerce-api-v1",
   "version": "1.0.0",
   "description": "",
-  "main": "set NODE_ENV=prod && set BASE_URL=https://cyan-bluefish-garb.cyclic.app&& node server.js",
+  "main": "server.js",
   "engines": {
-    "node":"18.x"
+    "node": "18.x"
   },
   "scripts": {
     "dev": "set NODE_ENV=dev && set BASE_URL=http://localhost:8000&& nodemon server.js",
-    "prod": "set NODE_ENV=prod && set BASE_URL=https://nodejs-ecommerce-app.vercel.app&& node server.js",
+    "start": "set NODE_ENV=prod && set BASE_URL=https://cyan-bluefish-garb.cyclic.app&& node server.js",
     "build": "npm install"
   },
   "keywords": [],
