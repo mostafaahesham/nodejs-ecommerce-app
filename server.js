@@ -20,10 +20,14 @@ const APIError = require("./utils/apiError");
 dotenv.config({ path: "config.env" });
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+// const PORT = process.env.PORT || 8000;
+
+// const server = app.listen(PORT, () => {
+//   console.log(`App Running on port ${PORT}`);
+// });
 
 // connect to db
-dbConnection();
+const server = dbConnection(app);
 
 // MiddleWares
 app.use(express.json());
@@ -50,10 +54,6 @@ app.all("*", (req, res, next) => {
 
 // glonal err handling middleware for express app
 app.use(globalErrorHandler);
-
-const server = app.listen(PORT, () => {
-  console.log(`App Running on port ${PORT}`);
-});
 
 // Handling Rejections Outside express app
 process.on("unhandledRejection", (err) => {
