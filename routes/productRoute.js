@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 
 const {
   getProducts,
@@ -18,15 +19,15 @@ const {
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(getProducts)
-  .post(
-    uploadProductVariantImages,
-    resizeProductVariantImages,
-    createProductValidator,
-    createProduct
-  );
+const upload = multer();
+
+router.route("/").get(getProducts).post(
+  // upload.none(),
+  // uploadProductVariantImages,
+  // resizeProductVariantImages,
+  createProductValidator,
+  createProduct
+);
 router
   .route("/:id")
   .get(getProductValidator, getProduct)

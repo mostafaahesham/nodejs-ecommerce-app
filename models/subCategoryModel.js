@@ -33,7 +33,7 @@ const setImageURL = (doc) => {
 };
 
 subCategorySchema.pre(/^find/, function (next) {
-  this.populate({ path: "category", select: "name -_id" });
+  this.populate({ path: "category", select: "name" });
   next();
 });
 

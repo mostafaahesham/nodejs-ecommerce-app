@@ -16,7 +16,7 @@ module.exports = new mongoose.Schema({
     required: [true, "variant images are required"],
     validate: {
       validator: function (variantImages) {
-        return variantImages.length >= 1 && variantImages.length <= 5;
+        return variantImages.length >= 1 && variantImages.length <= 20;
       },
       msg: "min number of variantImages is 1, max number of variantImages is 5",
     },

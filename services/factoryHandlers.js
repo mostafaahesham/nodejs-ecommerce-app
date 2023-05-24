@@ -17,15 +17,19 @@ exports.getOne = (Model) =>
 
 exports.getAll = (Model) =>
   asyncHandler(async (req, res) => {
+    const count = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
+      .paginate(count)
       .search()
-      .paginate()
       .filter()
       .limitFields()
       .sort();
+    const { mongooseQuery, paginationResult } = apiFeatures;
 
-    const docs = await apiFeatures.mongooseQuery;
-    res.status(200).json({ results: docs.length, data: docs });
+    const docs = await mongooseQuery;
+    res
+      .status(200)
+      .json({ paginationResult, results: docs.length, data: docs });
   });
 
 exports.updateOne = (Model) =>
