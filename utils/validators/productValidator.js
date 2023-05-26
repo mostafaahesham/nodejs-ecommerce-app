@@ -1,4 +1,4 @@
-const { check, body } = require("express-validator");
+const { check, body, param } = require("express-validator");
 const { default: slugify } = require("slugify");
 
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
@@ -72,6 +72,15 @@ exports.createProductValidator = [
 
 exports.getProductValidator = [
   check("id").isMongoId().withMessage("Invalid product Id format"),
+  validatorMiddleware,
+];
+
+exports.getProductsValidator = [
+  param("brandId")
+    .optional()
+    .isMongoId()
+    .withMessage("invalid brand id format")
+    .custom(async (val) => await checkDocExistence(brandModel, "id", val)),
   validatorMiddleware,
 ];
 

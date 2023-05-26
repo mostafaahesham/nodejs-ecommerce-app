@@ -14,10 +14,13 @@ const {
   deleteBrandValidator,
   createBrandValidator,
 } = require("../utils/validators/brandValidator");
+const productRoute = require("./productRoute");
 
 const auth = require("../services/authService");
 
 const router = express.Router();
+
+router.use("/:brandId/products", productRoute);
 
 router
   .route("/")

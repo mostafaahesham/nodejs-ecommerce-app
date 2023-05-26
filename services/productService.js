@@ -74,6 +74,15 @@ exports.resizeProductVariantImages = asyncHandler(async (req, res, next) => {
   next();
 });
 
+exports.createFilterObject = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.brandId) {
+    filterObject = { brand: req.params.brandId };
+  }
+  req.filterObj = filterObject;
+  next();
+};
+
 // @desc    Create Product
 // @route   POST    /api/v1/products
 // @access  Private

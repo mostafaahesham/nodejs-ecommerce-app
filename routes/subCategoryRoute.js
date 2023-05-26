@@ -11,6 +11,7 @@ const {
 const {
   createSubCategoryValidator,
   getSubCategoryValidator,
+  getSubCategoriesValidator,
   updateSubCategoryValidator,
   deleteSubCategoryValidator,
 } = require("../utils/validators/subCategoryValidator");
@@ -21,7 +22,7 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(createFilterObject, getSubCategories)
+  .get(getSubCategoriesValidator, createFilterObject, getSubCategories)
   .post(uploadSubCategoryImage, createSubCategoryValidator, createSubCategory);
 router
   .route("/:id")

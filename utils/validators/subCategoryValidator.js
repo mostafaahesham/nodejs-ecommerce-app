@@ -1,4 +1,4 @@
-const { check, body } = require("express-validator");
+const { check, body, param } = require("express-validator");
 const { default: slugify } = require("slugify");
 const asyncHandler = require("express-async-handler");
 
@@ -9,6 +9,15 @@ const categoryModel = require("../../models/categoryModel");
 const productModel = require("../../models/productModel");
 
 const APIError = require("../apiError");
+
+exports.getSubCategoriesValidator = [
+  param("categoryId")
+    .optional()
+    .isMongoId()
+    .withMessage("invalid category id format")
+    .custom(async (val) => await checkDocExistence(categoryModel, "id", val)),
+  validatorMiddleware,
+];
 
 exports.getSubCategoryValidator = [
   check("id").isMongoId().withMessage("invalid subCategory id format"),

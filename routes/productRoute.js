@@ -6,11 +6,13 @@ const {
   getProduct,
   updateProduct,
   deleteProduct,
+  createFilterObject,
   uploadProductVariantImages,
   resizeProductVariantImages,
 } = require("../services/productService");
 const {
   getProductValidator,
+  getProductsValidator,
   updateProductValidator,
   deleteProductValidator,
   createProductValidator,
@@ -18,17 +20,20 @@ const {
 
 const reviewRoute = require("./reviewRoute");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use("/:productId/reviews", reviewRoute);
 
-router.route("/").get(getProducts).post(
-  // upload.none(),
-  // uploadProductVariantImages,
-  // resizeProductVariantImages,
-  createProductValidator,
-  createProduct
-);
+router
+  .route("/")
+  .get(getProductsValidator, createFilterObject, getProducts)
+  .post(
+    // upload.none(),
+    // uploadProductVariantImages,
+    // resizeProductVariantImages,
+    createProductValidator,
+    createProduct
+  );
 router
   .route("/:id")
   .get(getProductValidator, getProduct)
