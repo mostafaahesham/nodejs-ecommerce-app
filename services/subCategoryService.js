@@ -27,6 +27,15 @@ exports.uploadSubCategoryImage = uploadSingleImage(
   "subCategories"
 );
 
+exports.createFilterObject = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) {
+    filterObject = { category: req.params.categoryId };
+  }
+  req.filterObj = filterObject;
+  next();
+};
+
 // @desc    Create subCategory
 // @route   POST    /api/v1/subcategories
 // @access  Private

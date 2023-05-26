@@ -9,16 +9,24 @@ exports.createOne = (Model) =>
     res.status(201).json({ data: doc });
   });
 
-exports.getOne = (Model) =>
+exports.getOne = (Model, populationOptions) =>
   asyncHandler(async (req, res, next) => {
-    const doc = await checkDocExistence(Model, "id", req.params.id);
+    let query = Model.findById(req.params.id);
+    if (populationOptions) {
+      query = query.populate(populationOptions);
+    }
+    const doc = await query;
     res.status(200).json({ data: doc });
   });
 
 exports.getAll = (Model) =>
   asyncHandler(async (req, res) => {
+    let filter = {};
+    if (req.filterObj) {
+      filter = req.filterObj;
+    }
     const count = await Model.countDocuments();
-    const apiFeatures = new ApiFeatures(Model.find(), req.query)
+    const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
       .paginate(count)
       .search()
       .filter()

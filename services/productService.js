@@ -44,8 +44,8 @@ exports.resizeProductVariantImages = asyncHandler(async (req, res, next) => {
   ) {
     const color = variants[j].color;
     const variantColorImage = `product-${color}-${uuidv4()}-${Date.now()}.png`;
-    if (files[fileKeys[j*2]].length > 1) {
-      console.log(files[fileKeys[j*2]].length);
+    if (files[fileKeys[j * 2]].length > 1) {
+      console.log(files[fileKeys[j * 2]].length);
       throw new APIError("only one image is allowed for variantImage", 404);
     }
     await sharp(files[fileKeys[j]][0].buffer)
@@ -82,7 +82,7 @@ exports.createProduct = factory.createOne(productModel);
 // @desc    Get Specific product by id
 // @route   GET /api/v1/products/:id
 // @access  Public
-exports.getProduct = factory.getOne(productModel);
+exports.getProduct = factory.getOne(productModel, "reviews");
 
 // @desc    Get List of products
 // @route   GET /api/v1/products

@@ -2,7 +2,11 @@ const { check, body } = require("express-validator");
 const { default: slugify } = require("slugify");
 
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const checkDocExistence = require("../helpers/checkDocExistence");
 const reviewModel = require("../../models/reviewModel");
+const userModel = require("../../models/userModel");
+const productModel = require("../../models/productModel");
+
 const APIError = require("../apiError");
 
 exports.getReviewValidator = [
@@ -13,22 +17,29 @@ exports.getReviewValidator = [
 exports.createReviewValidator = [
   check("comment")
     .optional()
-    .isLength({ max: 500 })
-    .withMessage("review comment can't be more than 500 charachters")
+    .isLength({ max: 1000 })
+    .withMessage("review comment can't be more than 1000 charachters")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
-  check("ratings")
+  check("rating")
     .notEmpty()
-    .withMessage("review ratings are required")
+    .withMessage("rating is required")
     .isFloat({ min: 1.0, max: 5.0 })
     .withMessage("ratings must be between 1.0 & 5.0"),
-  check("user").isMongoId().withMessage("invalid user id format"),
+  check("user")
+    .isMongoId()
+    .withMessage("invalid user id format")
+    .custom(async (val) => {
+      await checkDocExistence(userModel, "id", val);
+      return true;
+    }),
   check("product")
     .isMongoId()
     .withMessage("invalid product id format")
     .custom(async (val, { req }) => {
+      await checkDocExistence(productModel, "id", val);
       const review = await reviewModel.findOne({
         user: req.body.user,
         product: req.body.product,
@@ -45,11 +56,9 @@ exports.deleteReviewValidator = [
     .isMongoId()
     .withMessage("invalid review id format")
     .custom(async (val, { req }) => {
-      if (req.user.role == "user") {
-        const review = await reviewModel.findById(val);
-        if (review.user.toString() != req.user._id.toString()) {
-          throw new APIError("not allowed to perform this action");
-        }
+      const review = await checkDocExistence(reviewModel, "id", val);
+      if (review.user._id.toString() != req.user._id.toString()) {
+        throw new APIError("not allowed to perform this action");
       }
     }),
   validatorMiddleware,

@@ -1,5 +1,4 @@
 const express = require("express");
-const multer = require("multer");
 
 const {
   getProducts,
@@ -17,9 +16,11 @@ const {
   createProductValidator,
 } = require("../utils/validators/productValidator");
 
+const reviewRoute = require("./reviewRoute");
+
 const router = express.Router();
 
-const upload = multer();
+router.use("/:productId/reviews", reviewRoute);
 
 router.route("/").get(getProducts).post(
   // upload.none(),

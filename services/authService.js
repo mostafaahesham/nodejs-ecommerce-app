@@ -74,9 +74,9 @@ exports.signIn = asyncHandler(async (req, res, next) => {
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
     return next(new APIError("incorrect email or password", 400));
   }
-  if (!user.isVerified) {
-    return next(new APIError("email not verified", 400));
-  }
+  // if (!user.isVerified) {
+  //   return next(new APIError("email not verified", 400));
+  // }
 
   const token = generateToken(user._id);
 

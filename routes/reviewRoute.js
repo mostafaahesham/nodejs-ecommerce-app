@@ -5,6 +5,7 @@ const {
   createReview,
   getReview,
   deleteReview,
+  createFilterObject,
 } = require("../services/reviewService");
 const {
   getReviewValidator,
@@ -14,12 +15,25 @@ const {
 
 const auth = require("../services/authService");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.route("/").get(getReviews).post(createReviewValidator, createReview);
+router
+  .route("/")
+  .get(createFilterObject, getReviews)
+  .post(
+    auth.authenticate,
+    auth.authorize("user"),
+    createReviewValidator,
+    createReview
+  );
 router
   .route("/:id")
   .get(getReviewValidator, getReview)
-  .delete(deleteReviewValidator, deleteReview);
+  .delete(
+    auth.authenticate,
+    auth.authorize("user", "admin"),
+    deleteReviewValidator,
+    deleteReview
+  );
 
 module.exports = router;

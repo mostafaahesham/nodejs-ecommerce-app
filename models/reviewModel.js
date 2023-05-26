@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
+const productModel = require("./productModel");
 
 const reviewSchema = new mongoose.Schema(
   {
     comment: {
       type: String,
-      maxlength: [500, "review comment can't be more than 500 charachters"],
+      maxlength: [1000, "review comment can't be more than 1000 charachters"],
     },
 
-    ratings: {
+    rating: {
       type: Number,
       min: [1, "min rating is 1.0"],
       max: [5, "max rating is 5.0"],
-      required: [true, "ratings are required"],
+      required: [true, "rating is required"],
     },
     user: {
       type: mongoose.Schema.ObjectId,
@@ -21,7 +22,7 @@ const reviewSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.ObjectId,
       ref: "Product",
-      required: [true, "reviews must belong to a product"],
+      required: [true, "rating must be applied on a product"],
     },
   },
   { timestamps: true }
@@ -30,6 +31,42 @@ const reviewSchema = new mongoose.Schema(
 reviewSchema.pre(/^find/, function (next) {
   this.populate({ path: "user", select: "name" });
   next();
+});
+
+reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
+  productId
+) {
+  const result = await this.aggregate([
+    { $match: { product: productId } },
+    {
+      $group: {
+        _id: "product",
+        avgRatings: { $avg: "$rating" },
+        ratingsCount: { $sum: 1 },
+      },
+    },
+  ]);
+  console.log(result);
+
+  if (result.length > 0) {
+    await productModel.findByIdAndUpdate(productId, {
+      ratingsAverage: result[0].avgRatings,
+      ratingsCount: result[0].ratingsCount,
+    });
+  } else {
+    await productModel.findByIdAndUpdate(productId, {
+      ratingsAverage: 0,
+      ratingsCount: 0,
+    });
+  }
+};
+
+reviewSchema.post("save", async function () {
+  await this.constructor.calcAverageRatingsAndQuantity(this.product);
+});
+
+reviewSchema.post("remove", async function () {
+  await this.constructor.calcAverageRatingsAndQuantity(this.product);
 });
 
 module.exports = mongoose.model("Review", reviewSchema);

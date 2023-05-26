@@ -4,6 +4,15 @@ const factory = require("./factoryHandlers");
 
 const reviewModel = require("../models/reviewModel");
 
+exports.createFilterObject = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.productId) {
+    filterObject = { product: req.params.productId };
+  }
+  req.filterObj = filterObject;
+  next();
+};
+
 // @desc    Create review
 // @route   POST    /api/v1/reviews
 // @access  Private

@@ -69,7 +69,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       min: [1, "min rating must be >= 1.0"],
       max: [5, "max rating must be <= 5.0"],
-      default: 5,
+      default: 0,
     },
     ratingsCount: {
       type: Number,
@@ -83,11 +83,20 @@ const productSchema = new mongoose.Schema(
       message: "min number of variants is 1 & maximum number of varints is 10",
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+productSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "product",
+  localField: "_id",
+});
+
 productSchema.pre(/^find/, function (next) {
-  this.populate({ path: "category subCategory brand", select: "name name name" });
+  this.populate({
+    path: "category subCategory brand",
+    select: "name name name",
+  });
   next();
 });
 

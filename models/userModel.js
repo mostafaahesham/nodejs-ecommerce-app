@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema(
     confirmationCode: {
       type: String,
     },
+    favorites: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   {
     timestamps: true,
