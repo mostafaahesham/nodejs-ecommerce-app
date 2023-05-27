@@ -8,14 +8,7 @@ const cors = require("cors");
 const dbConnection = require("./config/db_connection");
 const globalErrorHandler = require("./middleware/errorMiddleware");
 
-const categoryRoute = require("./routes/categoryRoute");
-const subCategoryRoute = require("./routes/subCategoryRoute");
-const brandRoute = require("./routes/brandRoute");
-const productRoute = require("./routes/productRoute");
-const reviewRoute = require("./routes/reviewRoute");
-const favoritesRoute = require("./routes/favoritesRoute");
-const userRoute = require("./routes/userRoute");
-const authRoute = require("./routes/authRoute");
+const mountRoutes = require("./routes/routes");
 
 const APIError = require("./utils/apiError");
 
@@ -35,17 +28,11 @@ if (process.env.NODE_ENV == "dev") {
   app.use(morgan("dev"));
 }
 
+// mount routes
+mountRoutes(app);
+
 console.log(`mode: ${process.env.NODE_ENV}`);
 console.log(`BASE_URL: ${process.env.BASE_URL}`);
-
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/subcategories", subCategoryRoute);
-app.use("/api/v1/brands", brandRoute);
-app.use("/api/v1/products", productRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/favorites", favoritesRoute);
 
 app.all("*", (req, res, next) => {
   next(new APIError(`Cannot find this route: ${req.originalUrl}`, 400));

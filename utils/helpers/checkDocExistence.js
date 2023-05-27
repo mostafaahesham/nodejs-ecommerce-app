@@ -13,7 +13,6 @@ const checkDocExistance = async (Model, key, val) => {
       break;
   }
   if (!doc) {
-    console.log(doc);
     throw new APIError(`no ${Model.modelName} of ${key}: ${val} exists`, 404);
   }
   return doc;

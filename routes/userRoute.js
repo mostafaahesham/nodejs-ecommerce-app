@@ -24,7 +24,7 @@ const auth = require("../services/authService");
 
 const router = express.Router();
 
-router.use(auth.authenticate, auth.authorize("admin", "vendor", "user"));
+router.use(auth.authenticate, auth.authorize("admin", "user"));
 
 router.get("/getme", getLoggedUserData, getUserValidator, getUser);
 router.put("/changemymassword", updateLoggedUserPassword);

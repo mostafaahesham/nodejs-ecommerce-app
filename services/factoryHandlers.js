@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 
-const ApiFeatures = require("../utils/apiFeatures");
 const checkDocExistence = require("../utils/helpers/checkDocExistence");
+const ApiFeatures = require("../utils/apiFeatures");
+const APIError = require("../utils/apiError");
 
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
@@ -16,6 +17,12 @@ exports.getOne = (Model, populationOptions) =>
       query = query.populate(populationOptions);
     }
     const doc = await query;
+    if (!doc) {
+      throw new APIError(
+        `no ${Model.modelName} of id: ${req.params.id} exists`,
+        404
+      );
+    }
     res.status(200).json({ data: doc });
   });
 
