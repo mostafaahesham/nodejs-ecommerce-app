@@ -5,6 +5,8 @@ const factory = require("./factoryHandlers");
 const checkDocExistance = require("../utils/helpers/checkDocExistence");
 const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
+const userModel = require("../models/userModel");
+const promoCodeModel = require("../models/promoCodeModel");
 
 const APIError = require("../utils/apiError");
 
@@ -43,7 +45,6 @@ exports.addToCart = asyncHandler(async (req, res, next) => {
   const tempProduct = new productModel();
 
   Object.assign(tempProduct, productWithoutVariants);
-  console.log(tempProduct);
 
   const color = product.variants.find((clr) => clr._id == colorId);
 
@@ -153,5 +154,53 @@ exports.emptyLoggedUserCart = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     msg: "cart cleared",
+  });
+});
+
+// @desc    Apply PromoCode on cart
+// @route   DELETE    /api/v1/carts/:promoCode
+// @access  Private
+exports.applyPromoCode = asyncHandler(async (req, res, next) => {
+  const cart = await cartModel.findOne({ user: req.user._id });
+
+  if (!cart) {
+    return next(new APIError("cart not found", 404));
+  }
+
+  const promoCode = await promoCodeModel.findOne({ name: req.body.promoCode });
+  if (!promoCode) {
+    return next(new APIError("invalid promoCode", 404));
+  }
+
+  if (new Date(promoCode.expiryDate) < Date.now()) {
+    return next(new APIError("expired promoCode", 401));
+  }
+
+  if (req.user.promoCodes.includes(promoCode.name)) {
+    return next(
+      new APIError("user has already used this promoCode before", 401)
+    );
+  }
+  if (promoCode.type == "$") {
+    cart.priceAfterPromoCode = Math.max(cart.price - promoCode.value, 0);
+  }
+  if (promoCode.type == "%") {
+    cart.priceAfterPromoCode = Math.max(
+      (1 - promoCode.value / 100) * cart.price,
+      0
+    );
+  }
+  await userModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      $addToSet: { promoCodes: req.body.promoCode },
+    },
+    { new: true }
+  );
+  await cart.save();
+  res.status(200).json({
+    status: "success",
+    msg: `promoCode ${promoCode.name} applied -${promoCode.value}${promoCode.type}`,
+    data: cart,
   });
 });

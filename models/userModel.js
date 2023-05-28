@@ -62,6 +62,9 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+    promoCodes: {
+      type: [String],
+    },
   },
   {
     timestamps: true,

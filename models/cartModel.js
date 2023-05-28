@@ -52,7 +52,7 @@ const cartSchema = new mongoose.Schema(
       //   required: [true, "price is required"],
       min: [1, "min price is 1$"],
     },
-    priceAfterPromo: {
+    priceAfterPromoCode: {
       type: Number,
     },
     user: {
