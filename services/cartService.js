@@ -15,6 +15,8 @@ const calculateCartprice = (cart) => {
   cart.items.forEach((item) => {
     totalCartPrice += item.quantity * item.product.discountedPrice;
   });
+  cart.price = totalCartPrice;
+  cart.priceAfterPromoCode = undefined;
   return totalCartPrice;
 };
 
@@ -111,7 +113,7 @@ exports.addToCart = asyncHandler(async (req, res, next) => {
     console.log("cart exists");
   }
 
-  cart.price = calculateCartprice(cart);
+  calculateCartprice(cart);
 
   await cart.save();
 
@@ -136,8 +138,8 @@ exports.removeFromCart = asyncHandler(async (req, res, next) => {
   if (!cart) {
     return next(new APIError("cart not found", 404));
   }
+  calculateCartprice(cart);
   await cart.save();
-  cart.price = calculateCartprice(cart);
   res.status(200).json({
     status: "success",
     numberOfItems: cart.items.length,
