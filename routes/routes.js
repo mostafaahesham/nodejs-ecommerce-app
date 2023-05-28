@@ -5,6 +5,7 @@ const productRoute = require("./productRoute");
 const reviewRoute = require("./reviewRoute");
 const favoritesRoute = require("./favoritesRoute");
 const promoCodeRoute = require("./promoCodeRoute");
+const cartRoute = require("./cartRoute");
 const userRoute = require("./userRoute");
 const authRoute = require("./authRoute");
 
@@ -16,6 +17,7 @@ const mountRoutes = (app) => {
   app.use("/api/v1/reviews", reviewRoute);
   app.use("/api/v1/favorites", favoritesRoute);
   app.use("/api/v1/promoCodes", promoCodeRoute);
+  app.use("/api/v1/carts", cartRoute);
   app.use("/api/v1/users", userRoute);
   app.use("/api/v1/auth", authRoute);
 };
