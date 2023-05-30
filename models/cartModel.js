@@ -43,17 +43,10 @@ const cartSchema = new mongoose.Schema(
         },
       },
     ],
-    promocode: {
-      type: mongoose.Schema.ObjectId,
-      ref: "PromoCode",
-    },
     price: {
       type: Number,
-      //   required: [true, "price is required"],
-      min: [1, "min price is 1$"],
-    },
-    priceAfterPromoCode: {
-      type: Number,
+      required: [true, "price is required"],
+      min: [0, "min price is 0$"],
     },
     user: {
       type: mongoose.Schema.ObjectId,

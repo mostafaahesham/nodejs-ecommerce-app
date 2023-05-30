@@ -18,7 +18,7 @@ module.exports = new mongoose.Schema({
       validator: function (variantImages) {
         return variantImages.length >= 1 && variantImages.length <= 20;
       },
-      msg: "min number of variantImages is 1, max number of variantImages is 5",
+      msg: "min number of variantImages is 1, max number of variantImages is 20",
     },
   },
   sizes: {
