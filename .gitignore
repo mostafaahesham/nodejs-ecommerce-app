@@ -1,4 +1,4 @@
-/backend/config.env
+/config.env
 /.eslintrc.json
 /node_modules
 /test.js

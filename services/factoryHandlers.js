@@ -35,10 +35,10 @@ exports.getAll = (Model) =>
     const count = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
       .paginate(count)
-      .search()
       .filter()
       .limitFields()
-      .sort();
+      .sort()
+      .search();
     const { mongooseQuery, paginationResult } = apiFeatures;
 
     const docs = await mongooseQuery;

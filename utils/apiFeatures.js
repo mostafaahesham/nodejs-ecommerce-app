@@ -5,11 +5,11 @@ class ApiFeatures {
   }
 
   filter() {
-    const queryStringObject = { ...this.queryString };
-    const execludedField = ["page", "sort", "limit", "fields"];
-    execludedField.forEach((field) => delete queryStringObject[field]);
+    const queryStringObj = { ...this.queryString };
+    const execludedFields = ["page", "sort", "limit", "fields", "keyword"];
+    execludedFields.forEach((field) => delete queryStringObj[field]);
 
-    let queryStr = JSON.stringify(queryStringObject);
+    let queryStr = JSON.stringify(queryStringObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
     return this;
@@ -37,15 +37,18 @@ class ApiFeatures {
 
   search() {
     if (this.queryString.keyword) {
+      const keyword = this.queryString.keyword;
       const query = {};
       query.$or = [
-        { name: { $regex: this.queryString.keyword, $options: "i" } },
-        { description: { $regex: this.queryString.keyword, $options: "i" } },
+        { name: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { "variants.color": { $regex: keyword, $options: "i" } },
+        { "variants.sizes.name": { $regex: keyword, $options: "i" } },
       ];
-      console.log(query);
 
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
+
     return this;
   }
 
