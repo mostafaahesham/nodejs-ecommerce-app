@@ -95,7 +95,7 @@ productSchema.virtual("reviews", {
 productSchema.pre(/^find/, function (next) {
   this.populate({
     path: "category subCategory brand",
-    select: "name name name",
+    select: "name image",
   });
   next();
 });
