@@ -88,7 +88,6 @@ class ApiFeatures {
       this.mongooseQuery = this.mongooseQuery
         .find({})
         .limit(Number(this.queryString.rand))
-        .lean()
         .then((docs) => {
           const randomizedDocs = docs.sort(() => Math.random() - 0.5);
           return randomizedDocs;
