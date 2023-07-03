@@ -6,7 +6,14 @@ class ApiFeatures {
 
   filter() {
     const queryStringObj = { ...this.queryString };
-    const execludedFields = ["page", "sort", "limit", "fields", "keyword"];
+    const execludedFields = [
+      "page",
+      "sort",
+      "limit",
+      "fields",
+      "keyword",
+      "rand",
+    ];
     execludedFields.forEach((field) => delete queryStringObj[field]);
 
     let queryStr = JSON.stringify(queryStringObj);
@@ -73,6 +80,20 @@ class ApiFeatures {
     this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
     this.paginationResult = pagination;
 
+    return this;
+  }
+
+  shuffle() {
+    if (this.queryString.rand) {
+      this.mongooseQuery = this.mongooseQuery
+        .find({})
+        .limit(Number(this.queryString.rand))
+        .lean()
+        .then((docs) => {
+          const randomizedDocs = docs.sort(() => Math.random() - 0.5);
+          return randomizedDocs;
+        });
+    }
     return this;
   }
 }

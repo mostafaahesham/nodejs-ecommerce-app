@@ -79,6 +79,10 @@ exports.createFilterObject = (req, res, next) => {
   if (req.params.brandId) {
     filterObject = { brand: req.params.brandId };
   }
+
+  if (req.params.subCategoryId) {
+    filterObject = { subCategory: req.params.subCategoryId };
+  }
   req.filterObj = filterObject;
   next();
 };
