@@ -50,7 +50,7 @@ reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
 
   if (result.length > 0) {
     await productModel.findByIdAndUpdate(productId, {
-      ratingsAverage: result[0].avgRatings,
+      ratingsAverage: result[0].avgRatings.toFixed(2),
       ratingsCount: result[0].ratingsCount,
     });
   } else {
