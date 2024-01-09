@@ -80,7 +80,7 @@ const productSchema = new mongoose.Schema(
       validator: function (variants) {
         return variants.length >= 1 && variants.length <= 10;
       },
-      message: "min number of variants is 1 & maximum number of varints is 10",
+      message: "min number of variants is 1 & maximum number of variants is 10",
     },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }

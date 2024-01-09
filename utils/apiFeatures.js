@@ -11,7 +11,7 @@ class ApiFeatures {
       "sort",
       "limit",
       "fields",
-      "keyword",
+      "search",
       "rand",
     ];
     execludedFields.forEach((field) => delete queryStringObj[field]);
@@ -43,14 +43,14 @@ class ApiFeatures {
   }
 
   search() {
-    if (this.queryString.keyword) {
-      const keyword = this.queryString.keyword;
+    if (this.queryString.search) {
+      const search = this.queryString.search;
       const query = {};
       query.$or = [
-        { name: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-        { "variants.color": { $regex: keyword, $options: "i" } },
-        { "variants.sizes.name": { $regex: keyword, $options: "i" } },
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+        { "variants.color": { $regex: search, $options: "i" } },
+        { "variants.sizes.name": { $regex: search, $options: "i" } },
       ];
 
       this.mongooseQuery = this.mongooseQuery.find(query);

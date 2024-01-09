@@ -14,9 +14,52 @@ const brandSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
+    email: {
+      type: String,
+      required: [true, "brand email is required"],
+      unique: [true, "this e-mail is already in use"],
+      lowercase: true,
+    },
     image: {
       type: String,
       required: [true, "brand image is required"],
+    },
+    logo: {
+      type: String,
+      required: [true, "brand logo is required"],
+    },
+    phoneNumber: {
+      type: Number,
+      required: [true, "user phone number is required"],
+    },
+    password: {
+      type: String,
+      required: [true, "user password is required"],
+      minLength: [8, "password must be at least 8 characters"],
+    },
+    passwordChangedAt: {
+      type: Date,
+    },
+    passwordResetCode: {
+      type: String,
+    },
+    passwordResetCodeExpiryDate: {
+      type: Date,
+    },
+    passwordResetVerified: {
+      type: Boolean,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    slogan: {
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }
